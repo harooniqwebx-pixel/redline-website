@@ -1,0 +1,390 @@
+import * as THREE from "three";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
+export function initRedlineScene() {
+  const hero = document.querySelector(".hero");
+  if (!hero || hero.dataset.sceneReady) return;
+
+  hero.dataset.sceneReady = "true";
+
+  const background = hero.querySelector(".hero-background");
+  const shade = hero.querySelector(".hero-shade");
+  const content = hero.querySelector(".hero-content");
+
+  hero.style.position = "relative";
+  hero.style.isolation = "isolate";
+
+  if (background) {
+    background.style.zIndex = "0";
+    background.style.willChange = "transform";
+  }
+
+  if (shade) shade.style.zIndex = "1";
+
+  // THREE.JS ATMOSPHERE
+  const canvas = document.createElement("canvas");
+  canvas.className = "redline-3d-canvas";
+
+  Object.assign(canvas.style, {
+    position: "absolute",
+    inset: "0",
+    width: "100%",
+    height: "100%",
+    zIndex: "2",
+    pointerEvents: "none"
+  });
+
+  hero.appendChild(canvas);
+
+  if (content) {
+    content.style.position = "relative";
+    content.style.zIndex = "4";
+  }
+
+  hero.querySelectorAll(".hero-side-label, .hero-index").forEach(el => {
+    el.style.zIndex = "4";
+  });
+
+  let renderer;
+
+  try {
+    renderer = new THREE.WebGLRenderer({
+      canvas,
+      alpha: true,
+      antialias: true
+    });
+  } catch (error) {
+    console.warn("REDLINE WebGL unavailable:", error);
+    canvas.remove();
+    return;
+  }
+
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+  renderer.setClearColor(0x000000, 0);
+
+  const scene = new THREE.Scene();
+
+  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+  camera.position.z = 12;
+
+  scene.add(new THREE.AmbientLight(0xffffff, 1.2));
+
+  const redLight = new THREE.PointLight(0xff1028, 80, 25);
+  redLight.position.set(3, 2, 5);
+  scene.add(redLight);
+
+  // 3D red arena rings
+  const rings = new THREE.Group();
+  rings.position.set(3, 0, 0);
+  scene.add(rings);
+
+  const ringMaterial = new THREE.MeshBasicMaterial({
+    color: 0xff1735,
+    wireframe: true,
+    transparent: true,
+    opacity: 0.32
+  });
+
+  const ringA = new THREE.Mesh(
+    new THREE.TorusGeometry(2.2, 0.018, 8, 100),
+    ringMaterial
+  );
+
+  const ringB = new THREE.Mesh(
+    new THREE.TorusGeometry(1.65, 0.012, 8, 100),
+    new THREE.MeshBasicMaterial({
+      color: 0xff465e,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.3
+    })
+  );
+
+  ringB.rotation.x = Math.PI / 2.5;
+  ringB.rotation.y = Math.PI / 4;
+
+  rings.add(ringA, ringB);
+
+  // Floating particle field
+  const count = 900;
+  const positions = new Float32Array(count * 3);
+
+  for (let i = 0; i < count; i++) {
+    positions[i * 3] = (Math.random() - 0.5) * 19;
+    positions[i * 3 + 1] = (Math.random() - 0.5) * 10;
+    positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
+  }
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute(
+    "position",
+    new THREE.BufferAttribute(positions, 3)
+  );
+
+  const particleMaterial = new THREE.PointsMaterial({
+    color: 0xff3048,
+    size: 0.035,
+    transparent: true,
+    opacity: 0.75
+  });
+
+  const particles = new THREE.Points(geometry, particleMaterial);
+  scene.add(particles);
+
+  // RESPONSIVE CANVAS
+  function resize() {
+    const width = hero.clientWidth;
+    const height = hero.clientHeight;
+
+    if (!width || !height) return;
+
+    renderer.setSize(width, height, false);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+
+    rings.position.x = width < 650 ? 1.8 : 3;
+    rings.scale.setScalar(width < 650 ? 0.7 : 1);
+  }
+
+  resize();
+  window.addEventListener("resize", resize);
+
+  // LAYERED MOUSE PARALLAX
+  const quickBackgroundX = background
+    ? gsap.quickTo(background, "x", { duration: 0.8, ease: "power3.out" })
+    : null;
+
+  const quickBackgroundY = background
+    ? gsap.quickTo(background, "y", { duration: 0.8, ease: "power3.out" })
+    : null;
+
+  const quickContentX = content
+    ? gsap.quickTo(content, "x", { duration: 1, ease: "power3.out" })
+    : null;
+
+  const quickContentY = content
+    ? gsap.quickTo(content, "y", { duration: 1, ease: "power3.out" })
+    : null;
+
+  const quickCameraX = gsap.quickTo(camera.position, "x", {
+    duration: 1,
+    ease: "power3.out"
+  });
+
+  const quickCameraY = gsap.quickTo(camera.position, "y", {
+    duration: 1,
+    ease: "power3.out"
+  });
+
+  const reducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
+
+  hero.addEventListener("pointermove", event => {
+    if (reducedMotion || event.pointerType === "touch") return;
+
+    const rect = hero.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width - 0.5;
+    const y = (event.clientY - rect.top) / rect.height - 0.5;
+
+    quickBackgroundX?.(x * -24);
+    quickBackgroundY?.(y * -16);
+
+    quickContentX?.(x * -8);
+    quickContentY?.(y * -5);
+
+    quickCameraX(x * 0.35);
+    quickCameraY(y * -0.25);
+  });
+
+  hero.addEventListener("pointerleave", () => {
+    quickBackgroundX?.(0);
+    quickBackgroundY?.(0);
+    quickContentX?.(0);
+    quickContentY?.(0);
+    quickCameraX(0);
+    quickCameraY(0);
+  });
+
+  // HERO ENTRANCE
+  if (!reducedMotion && content) {
+    gsap.fromTo(
+      content.children,
+      { y: 45, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 1.2,
+        stagger: 0.14,
+        ease: "power4.out",
+        delay: 0.2
+      }
+    );
+  }
+
+  // SCROLL-TRIGGERED HERO DEPTH
+  if (!reducedMotion) {
+    const heroTimeline = gsap.timeline({
+      scrollTrigger: {
+        trigger: hero,
+        start: "top top",
+        end: "bottom top",
+        scrub: 1
+      }
+    });
+
+    if (background) {
+      heroTimeline.to(background, {
+        y: 130,
+        scale: 1.15,
+        ease: "none"
+      }, 0);
+    }
+
+    heroTimeline.to(rings.position, {
+      y: -1.5,
+      ease: "none"
+    }, 0);
+
+    heroTimeline.to(particles.rotation, {
+      z: 0.3,
+      ease: "none"
+    }, 0);
+  }
+
+  // ANIMATION LOOP
+  const clock = new THREE.Clock();
+  let animationFrame;
+
+  function animate() {
+    animationFrame = requestAnimationFrame(animate);
+
+    if (!reducedMotion) {
+      const time = clock.getElapsedTime();
+
+      ringA.rotation.z = time * 0.12;
+      ringB.rotation.z = -time * 0.16;
+
+      particles.rotation.y = time * 0.012;
+      particles.rotation.x = Math.sin(time * 0.15) * 0.03;
+
+      redLight.intensity = 80 + Math.sin(time * 1.5) * 12;
+    }
+
+    renderer.render(scene, camera);
+  }
+
+  animate();
+
+  window.addEventListener("pagehide", () => {
+    cancelAnimationFrame(animationFrame);
+    window.removeEventListener("resize", resize);
+    renderer.dispose();
+    geometry.dispose();
+    particleMaterial.dispose();
+    ringMaterial.dispose();
+  }, { once: true });
+}
+
+// SCROLL ANIMATIONS THROUGHOUT THE WEBSITE
+export function initRedlineScroll() {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    return;
+  }
+
+  // Reveal sections
+  gsap.utils.toArray(
+    ".intro-layout, .statement, .section-tag"
+  ).forEach(element => {
+    gsap.fromTo(
+      element,
+      { y: 55, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: element,
+          start: "top 88%",
+          toggleActions: "play none none reverse"
+        }
+      }
+    );
+  });
+
+  // Training cards enter with depth
+  gsap.utils.toArray(".feature-card").forEach((card, index) => {
+    gsap.fromTo(
+      card,
+      {
+        y: 100,
+        opacity: 0,
+        scale: 0.94
+      },
+      {
+        y: 0,
+        opacity: 1,
+        scale: 1,
+        duration: 1,
+        delay: index * 0.08,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: card,
+          start: "top 92%",
+          toggleActions: "play none none reverse"
+        }
+      }
+    );
+  });
+
+  // Other page images and cards
+  gsap.utils.toArray(
+    ".info-card, .price-card, .schedule-row, .gallery-image"
+  ).forEach((element, index) => {
+    gsap.fromTo(
+      element,
+      { y: 65, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.9,
+        delay: index * 0.04,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: element,
+          start: "top 90%",
+          toggleActions: "play none none reverse"
+        }
+      }
+    );
+  });
+
+  // STACKING CARDS
+  const cards = gsap.utils.toArray(".feature-card");
+
+  if (cards.length > 1) {
+    cards.forEach((card, index) => {
+      card.style.zIndex = String(index + 1);
+
+      if (index === cards.length - 1) return;
+
+      gsap.to(card, {
+        scale: 0.94,
+        opacity: 0.65,
+        ease: "none",
+        scrollTrigger: {
+          trigger: cards[index + 1],
+          start: "top 75%",
+          end: "top 25%",
+          scrub: true
+        }
+      });
+    });
+  }
+
+  ScrollTrigger.refresh();
+}

@@ -1,0 +1,254 @@
+{
+  "name": "redline-website",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "gsap": "^3.15.1",
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "vite": "^8.3.8"
+  }
+}
+const pages = {
+  home: {
+    label: "THE NEXT GENERATION",
+    title: "BUILT TO<br>RISE.<br><span>READY FOR MORE.</span>",
+    description: "Discipline. Power. Determination. Welcome to a new standard of combat sports and athletic performance.",
+    image: "/images/hero-fighter.jpg?auto=compress&cs=tinysrgb&w=1800",
+    button: "DISCOVER REDLINE",
+    heading: "MORE THAN A FIGHT.",
+    sub: "A DIFFERENT MINDSET.",
+    intro: "REDLINE is built around discipline, confidence, athletic performance and the pursuit of excellence.",
+    cards: [
+      ["01", "THE FIGHTERS", "Meet the athletes and discover their stories.", "fighters.html", "/images/hero-fighter.jpg1549719386-74dfcbf7dbed?w=900"],
+      ["02", "TRAINING", "Explore programs built around performance.", "training.html", "/images/hero-fighter.jpg1517836357463-d25dfeac3438?w=900"],
+      ["03", "EVENTS", "Discover upcoming events and experiences.", "events.html", "/images/hero-fighter.jpg1461896836934-ffe607ba8211?w=900"]
+    ]
+  },
+  fighters: {
+    label: "MEET THE ATHLETES",
+    title: "BUILT BY<br><span>DEDICATION.</span>",
+    description: "Meet the athletes, their backgrounds, their ambitions and the journeys that brought them here.",
+    image: "/images/hero-fighter.jpg1549476464-37392f717541?w=1800",
+    button: "MEET THE TEAM",
+    heading: "THE PEOPLE BEHIND THE PERFORMANCE.",
+    sub: "MEET OUR ATHLETES.",
+    intro: "Every athlete has a story. Explore the people, personalities and discipline that make REDLINE."
+  },
+  training: {
+    label: "YOUR NEXT CHAPTER STARTS HERE",
+    title: "TRAIN<br>WITH <span>PURPOSE.</span>",
+    description: "Build confidence, improve fitness and develop athletic skills in a focused training environment.",
+    image: "/images/hero-fighter.jpg1517836357463-d25dfeac3438?w=1800",
+    button: "EXPLORE TRAINING",
+    heading: "FIND YOUR PROGRAM.",
+    sub: "MOVE WITH PURPOSE.",
+    intro: "From conditioning to athletic development, explore programs designed to help you progress."
+  },
+  events: {
+    label: "THE REDLINE EXPERIENCE",
+    title: "THE ENERGY.<br>THE MOMENT.<br><span>THE ARENA.</span>",
+    description: "Discover sporting events, athlete showcases and special experiences from the REDLINE community.",
+    image: "/images/hero-fighter.jpg1461896836934-ffe607ba8211?w=1800",
+    button: "EXPLORE EVENTS",
+    heading: "EVERY EVENT HAS A STORY.",
+    sub: "BE PART OF IT.",
+    intro: "Discover the latest announcements, showcases and community events."
+  },
+  schedule: {
+    label: "PLAN YOUR WEEK",
+    title: "MAKE TIME<br>TO <span>PROGRESS.</span>",
+    description: "Find your next session and build consistency into your weekly routine.",
+    image: "/images/hero-fighter.jpg1534438327276-14e5300c3a48?w=1800",
+    button: "VIEW SCHEDULE",
+    heading: "YOUR WEEK AT REDLINE.",
+    sub: "SHOW UP. KEEP GROWING.",
+    intro: "Explore our sample weekly training timetable. Session availability can be confirmed with the team."
+  },
+  gallery: {
+    label: "INSIDE REDLINE",
+    title: "THE WORK.<br>THE FOCUS.<br><span>THE CULTURE.</span>",
+    description: "A visual look at athletic performance, training, teamwork and the REDLINE atmosphere.",
+    image: "/images/hero-fighter.jpg1583454110551-21f2fa2afe61?w=1800",
+    button: "VIEW GALLERY",
+    heading: "CAPTURED MOMENTS.",
+    sub: "REAL SPORT. REAL STORIES.",
+    intro: "Explore the atmosphere, the dedication and the community behind the brand."
+  },
+  coaches: {
+    label: "EXPERIENCE MEETS PASSION",
+    title: "LEARN FROM<br><span>THE BEST.</span>",
+    description: "Meet the people who help athletes develop skills, confidence and consistency.",
+    image: "/images/hero-fighter.jpg1571019613454-1cb2f99b2d8b?w=1800",
+    button: "MEET THE COACHES",
+    heading: "GUIDANCE THAT MATTERS.",
+    sub: "BUILT ON EXPERIENCE.",
+    intro: "Great coaching is about communication, commitment and helping people reach their potential."
+  },
+  membership: {
+    label: "YOUR JOURNEY STARTS HERE",
+    title: "INVEST IN<br><span>YOURSELF.</span>",
+    description: "Discover membership options and find a training experience that fits your goals.",
+    image: "/images/hero-fighter.jpg1534438327276-14e5300c3a48?w=1800",
+    button: "VIEW MEMBERSHIP",
+    heading: "CHOOSE YOUR PATH.",
+    sub: "MAKE YOUR MOVE.",
+    intro: "Explore sample membership options. Pricing and availability can be confirmed with REDLINE."
+  },
+  about: {
+    label: "THE REDLINE STORY",
+    title: "A BRAND.<br>A MINDSET.<br><span>A STANDARD.</span>",
+    description: "We believe in discipline, personal growth, athletic ambition and the strength of community.",
+    image: "/images/hero-fighter.jpg1549476464-37392f717541?w=1800",
+    button: "OUR STORY",
+    heading: "WHAT REDLINE STANDS FOR.",
+    sub: "MORE THAN A NAME.",
+    intro: "REDLINE represents the commitment to keep learning, improving and showing up."
+  },
+  contact: {
+    label: "LET'S CONNECT",
+    title: "YOUR NEXT<br>MOVE <span>STARTS HERE.</span>",
+    description: "Questions about programs, membership or events? Get in touch with the REDLINE team.",
+    image: "/images/hero-fighter.jpg1517836357463-d25dfeac3438?w=1800",
+    button: "CONTACT US",
+    heading: "START A CONVERSATION.",
+    sub: "WE'RE READY TO LISTEN.",
+    intro: "Send us a message and let us know what you are interested in."
+  }
+};
+
+const nav = [
+  ["HOME", "index.html", "home"],
+  ["FIGHTERS", "fighters.html", "fighters"],
+  ["TRAINING", "training.html", "training"],
+  ["EVENTS", "events.html", "events"],
+  ["SCHEDULE", "schedule.html", "schedule"],
+  ["GALLERY", "gallery.html", "gallery"],
+  }
+
+  return `<div class="feature-grid">
+    <article class="info-card"><span class="eyebrow">01 / DISCIPLINE</span><h3>SHOW UP.</h3><p>Consistency creates progress.</p></article>
+    <article class="info-card"><span class="eyebrow">02 / PERFORMANCE</span><h3>KEEP MOVING.</h3><p>Build your skills and confidence.</p></article>
+    <article class="info-card"><span class="eyebrow">03 / COMMUNITY</span><h3>GROW TOGETHER.</h3><p>Be part of something bigger.</p></article>
+  </div>`;
+}
+
+app.innerHTML = `
+  <header class="header">
+    <a class="brand" href="index.html">RED<span>LINE</span><small>PERFORMANCE CLUB</small></a>
+    <button class="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+    <nav class="navigation" aria-label="Main navigation">
+      ${nav.map(([name,url,key])=>`<a href="${url}" class="${current===key?'active':''}">${name}</a>`).join("")}
+    </nav>
+    <a href="contact.html" class="header-cta">JOIN THE MOVEMENT </a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-background" style="background-image:url('${page.image}')"></div>
+      <div class="hero-shade"></div>
+      <div class="hero-content">
+        <div class="eyebrow"><span class="red-dot"></span>${page.label}</div>
+        <h1>${page.title}</h1>
+        <p>${page.description}</p>
+        <a href="${current==="home"?"about.html":current==="contact"?"contact.html":"#content"}" class="primary-button">${page.button} </a>
+        <div class="hero-bottom">DISCIPLINE / PERFORMANCE / COMMUNITY</div>
+      </div>
+      <div class="hero-side-label">EST. REDLINE — NEVER STAND STILL</div>
+      <div class="hero-index">01 <span>/ 10</span></div>
+    </section>
+
+    <section class="intro-section" id="content">
+      <div class="section-tag">01 — THE REDLINE STANDARD</div>
+      <div class="intro-layout">
+        <h2>${page.heading}<br><span>${page.sub}</span></h2>
+        <p>${page.intro}</p>
+      </div>
+      ${current==="home" ? `<div class="feature-grid">${page.cards.map(cardHTML).join("")}</div>` : extraContent()}
+  font-size:25px;
+  cursor:pointer;
+}
+
+.hero {
+  min-height:690px;
+  height:calc(100vh - 88px);
+  max-height:950px;
+  position:relative;
+  display:flex;
+  align-items:center;
+  overflow:hidden;
+  background:#111;
+}
+
+.hero-background {
+  position:absolute;
+  inset:0;
+  background-size:cover;
+  background-position:center 35%;
+  filter:grayscale(65%) contrast(1.15) brightness(.63);
+  transform:scale(1.02);
+  animation:heroReveal 1.3s ease both;
+}
+
+.hero-shade {
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(90deg,#090909 0%,rgba(9,9,9,.94) 27%,rgba(9,9,9,.48) 61%,rgba(9,9,9,.15) 100%),
+    linear-gradient(0deg,#090909 0%,transparent 30%,rgba(0,0,0,.2) 100%);
+}
+
+.hero-content {
+  position:relative;
+  z-index:2;
+  padding:0 8%;
+  max-width:900px;
+  animation:contentIn .9s ease both;
+}
+
+.eyebrow {
+  color:var(--red);
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:4px;
+  margin-bottom:25px;
+}
+
+.red-dot {
+  display:inline-block;
+  width:7px;
+  height:7px;
+  background:var(--red);
+  border-radius:50%;
+  margin-right:10px;
+}
+
+.hero h1 {
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:clamp(75px,10vw,145px);
+  font-weight:900;
+  line-height:.79;
+  letter-spacing:-2px;
+  text-transform:uppercase;
+}
+
+.hero h1 span,.intro-layout h2 span,.statement h2 span {
+  color:var(--red);
+}
+
+.hero-content > p {
+  max-width:480px;
+  font-size:14px;
+  line-height:1.9;
+  color:#bbb;
+  margin:32px 0;
+}
+
+.primary-button {
+  display:inline-flex;
