@@ -210,19 +210,7 @@ nav.querySelectorAll('a').forEach(link => {
   });
 });
 
-const revealObserver = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-      revealObserver.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.12 });
-
-document.querySelectorAll('.section-heading, .fighter-card, .training-card, .event-feature, .event-secondary, .schedule-row, .gallery-grid img, .coach-content, .membership-card, .about-content, .contact-section > *').forEach(el => {
-  el.classList.add('reveal');
-  revealObserver.observe(el);
-});
+// Visual reveals are now controlled by the REDLINE master GSAP system.
 
 const sections = document.querySelectorAll('main section[id]');
 const navObserver = new IntersectionObserver(entries => {
@@ -237,26 +225,11 @@ const navObserver = new IntersectionObserver(entries => {
 
 sections.forEach(section => navObserver.observe(section));
 
-let ticking = false;
-window.addEventListener('scroll', () => {
-  if (!ticking) {
-    window.requestAnimationFrame(() => {
-      document.querySelectorAll('.parallax-image').forEach(img => {
-        const rect = img.parentElement.getBoundingClientRect();
-        if (rect.bottom > 0 && rect.top < window.innerHeight) {
-          const distance = (window.innerHeight - rect.top) * 0.12;
-          img.style.setProperty('--parallax-y', `${distance}px`);
-        }
-      });
-      ticking = false;
-    });
-    ticking = true;
-  }
-}, { passive: true });
-import './animations.js';
+// Hero parallax is now controlled by GSAP.
+
+
 import './hero-fix.js';
-import './redline-effects.js';
 
-import './golden-eagle.js';
+import './redline-master.js';
 
-import './fighters-cinema.js';
+import './redline-extra.js';
