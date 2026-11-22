@@ -1197,59 +1197,52 @@ html {
 }
 
 /* ===== END REDLINE GLASS NAVIGATION ===== */ 
-/* REDLINE MOBILE NAVBAR FIX */
+/* REDLINE MOBILE NAVIGATION */
 @media (max-width: 768px) {
   .navbar {
-    height: 72px !important;
-    padding: 0 6% !important;
+    height: auto !important;
+    min-height: 65px;
+    padding: 10px 4% !important;
+    display: flex;
+    flex-wrap: wrap;
     position: sticky;
     top: 0;
-    z-index: 1000;
   }
 
   .navbar .menu-toggle {
-    display: block !important;
-    margin-left: auto;
-    font-size: 28px;
-    padding: 8px;
-    z-index: 1002;
+    display: none !important;
   }
 
   .navbar .nav-links {
-    display: none !important;
-    position: absolute;
-    top: 72px;
-    left: 5%;
-    width: 90%;
-    max-height: 70svh;
-    overflow-y: auto;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 4px;
-    padding: 14px;
-    border-radius: 18px;
-    background: rgba(12, 15, 23, 0.98);
-    border: 1px solid rgba(255,255,255,0.16);
-    z-index: 1001;
+    display: flex !important;
+    width: 100%;
+    order: 3;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    justify-content: flex-start;
+    gap: 5px;
+    padding: 6px 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    scrollbar-width: none;
   }
 
-  .navbar .nav-links.open {
-    display: flex !important;
+  .navbar .nav-links::-webkit-scrollbar {
+    display: none;
   }
 
   .navbar .nav-links a {
-    display: flex;
-    width: 100%;
-    justify-content: flex-start;
-    padding: 13px 12px;
-    font-size: 14px;
-    border-radius: 10px;
+    flex: 0 0 auto;
+    padding: 8px 10px;
+    font-size: 11px;
+    white-space: nowrap;
   }
 
   .navbar .nav-cta {
     display: none !important;
   }
 }
-/* END MOBILE NAVBAR FIX */
-
-
+/* END REDLINE MOBILE NAVIGATION */
